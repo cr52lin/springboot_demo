@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cr.stuspringbootdemo.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.cr.stuspringbootdemo.domain.User" >
+  <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+  <result column="password" property="password" jdbcType="VARCHAR" />
+  <result column="sal" property="sal" jdbcType="DOUBLE" />
+</resultMap>
+
+  <resultMap id="BaseResultMap_Role" type="com.cr.stuspringbootdemo.domain.Role" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="role_name" property="role_name" jdbcType="VARCHAR" />
+    <result column="user_id" property="user_id" jdbcType="INTEGER" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id,password, name, sal
+  </sql>
+
+  <sql id="Base_Column_List_Role" >
+    id,role_name, user_id
+  </sql>
+
+  <delete id="delete" parameterType="java.lang.Integer" >
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <select id="select" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+
+  <insert id="add" parameterType="com.cr.stuspringbootdemo.domain.User" >
+    insert into user (id, password,name, sal
+      )
+    values (#{id,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR}, #{sal,jdbcType=DOUBLE}
+      )
+  </insert>
+  <!--<insert id="insertSelective" parameterType="com.cr.stuspringbootdemo.domain.User" >-->
+    <!--insert into user-->
+    <!--<trim prefix="(" suffix=")" suffixOverrides="," >-->
+      <!--<if test="id != null" >-->
+        <!--id,-->
+      <!--</if>-->
+      <!--<if test="name != null" >-->
+        <!--my_name,-->
+      <!--</if>-->
+      <!--<if test="sal != null" >-->
+        <!--SAL,-->
+      <!--</if>-->
+    <!--</trim>-->
+    <!--<trim prefix="values (" suffix=")" suffixOverrides="," >-->
+      <!--<if test="id != null" >-->
+        <!--#{id,jdbcType=INTEGER},-->
+      <!--</if>-->
+      <!--<if test="name != null" >-->
+        <!--#{name,jdbcType=VARCHAR},-->
+      <!--</if>-->
+      <!--<if test="sal != null" >-->
+        <!--#{sal,jdbcType=DOUBLE},-->
+      <!--</if>-->
+    <!--</trim>-->
+  <!--</insert>-->
+  <update id="update" parameterType="com.cr.stuspringbootdemo.domain.User" >
+    update user
+    <set >
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sal != null" >
+        sal = #{sal,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!--<update id="updateByPrimaryKey" parameterType="com.cr.stuspringbootdemo.domain.User" >-->
+    <!--update user-->
+    <!--set name = #{name,jdbcType=VARCHAR},-->
+      <!--sal = #{sal,jdbcType=DOUBLE}-->
+    <!--where id = #{id,jdbcType=INTEGER}-->
+  <!--</update>-->
+  <!--<select id="selectAll" resultMap="BaseResultMap"  >-->
+    <!--select-->
+    <!--<include refid="Base_Column_List" />-->
+    <!--from user-->
+  <!--</select>-->
+
+
+  <select id="getRoleByUserName" resultMap="BaseResultMap_Role"  >
+  select
+  <include refid="Base_Column_List_Role" />
+    FROM role where user_id in (select id from user where name = #{name,jdbcType=VARCHAR});
+  </select>
+
+  <select id="selectByName" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    FROM user where name = #{name,jdbcType=VARCHAR};
+  </select>
+
+</mapper>
